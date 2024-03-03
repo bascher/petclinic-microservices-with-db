@@ -814,9 +814,9 @@ mkdir jenkins
 ```yml
 - job name: petclinic-ci-job
 - job type: Freestyle project
-- GitHub project: https://github.com/[your-github-account]/petclinic-microservices
+- GitHub project: https://github.com/bascher/petclinic-microservices
 - Source Code Management: Git
-      Repository URL: https://github.com/[your-github-account]/petclinic-microservices.git
+      Repository URL: https://github.com/bascher/petclinic-microservices-with-db.git
 - Branches to build:
       Branch Specifier (blank for 'any'): - */dev 
                                           - */feature**
@@ -1359,9 +1359,9 @@ git push --set-upstream origin feature/msp-16
 ```yml
 - job name: test-creating-qa-automation-infrastructure
 - job type: Freestyle project
-- GitHub project: https://github.com/[your-github-account]/petclinic-microservices
+- GitHub project: https://github.com/bascher/petclinic-microservices
 - Source Code Management: Git
-      Repository URL: https://github.com/[your-github-account]/petclinic-microservices.git
+      Repository URL: https://github.com/bascher/petclinic-microservices-with-db.git
 - Branches to build:
       Branch Specifier (blank for 'any'): */feature/msp-16
 - Build Environment: Add timestamps to the Console Output
@@ -1905,11 +1905,11 @@ DNS_NAME: "DNS Name of your application"
 
 * This pattern helps you to manage Helm v3 charts efficiently by integrating the Helm v3 repository into Amazon Simple Storage Service (Amazon S3) on the Amazon Web Services (AWS) Cloud. (https://docs.aws.amazon.com/prescriptive-guidance/latest/patterns/set-up-a-helm-v3-chart-repository-in-amazon-s3.html)
 
-* Create an ``S3 bucket`` for Helm charts. In the bucket, create a ``folder`` called ``stable/myapp``. The example in this pattern uses s3://petclinic-helm-charts-123/stable/myapp as the target chart repository.
+* Create an ``S3 bucket`` for Helm charts. In the bucket, create a ``folder`` called ``stable/myapp``. The example in this pattern uses s3://petclinic-helm-charts-bascher/stable/myapp as the target chart repository.
 
 ```bash
-aws s3api create-bucket --bucket petclinic-helm-charts-123 --region us-east-1
-aws s3api put-object --bucket petclinic-helm-charts-123 --key stable/myapp/
+aws s3api create-bucket --bucket petclinic-helm-charts-bascher --region us-east-1
+aws s3api put-object --bucket petclinic-helm-charts-bascher --key stable/myapp/
 ```
 
 * Install the helm-s3 plugin for Amazon S3.
@@ -1931,7 +1931,7 @@ exit
 * ``Initialize`` the Amazon S3 Helm repository.
 
 ```bash
-AWS_REGION=us-east-1 helm s3 init s3://petclinic-helm-charts-123/stable/myapp 
+AWS_REGION=us-east-1 helm s3 init s3://petclinic-helm-charts-bascher/stable/myapp 
 ```
 
 * The command creates an ``index.yaml`` file in the target to track all the chart information that is stored at that location.
@@ -1939,14 +1939,14 @@ AWS_REGION=us-east-1 helm s3 init s3://petclinic-helm-charts-123/stable/myapp
 * Verify that the ``index.yaml`` file was created.
 
 ```bash
-aws s3 ls s3://petclinic-helm-charts-123/stable/myapp/
+aws s3 ls s3://petclinic-helm-charts-bascher/stable/myapp/
 ```
 
 * Add the Amazon S3 repository to Helm on the client machine. 
 
 ```bash
 helm repo ls
-AWS_REGION=us-east-1 helm repo add stable-petclinicapp s3://petclinic-helm-charts-123/stable/myapp/
+AWS_REGION=us-east-1 helm repo add stable-petclinicapp s3://petclinic-helm-charts-bascher/stable/myapp/
 ```
 
 * Update `version` and `appVersion` field of `k8s/petclinic_chart/Chart.yaml` file as below for testing.
@@ -2121,9 +2121,9 @@ git push --set-upstream origin feature/msp-18
 ```yml
 - job name: test-msp-18-scripts
 - job type: Freestyle project
-- GitHub project: https://github.com/[your-github-account]/petclinic-microservices
+- GitHub project: https://github.com/bascher/petclinic-microservices
 - Source Code Management: Git
-      Repository URL: https://github.com/[your-github-account]/petclinic-microservices.git
+      Repository URL: https://github.com/bascher/petclinic-microservices-with-db.git
 - Branches to build:
       Branch Specifier (blank for 'any'): */feature/msp-18
 - Build:
@@ -2174,7 +2174,7 @@ aws ecr create-repository \
       kubectl create secret generic regcred -n petclinic-dev \
         --from-file=.dockerconfigjson=/home/ubuntu/.docker/config.json \
         --type=kubernetes.io/dockerconfigjson
-      AWS_REGION=$AWS_REGION helm repo add stable-petclinic s3://petclinic-helm-charts-123/stable/myapp/
+      AWS_REGION=$AWS_REGION helm repo add stable-petclinic s3://petclinic-helm-charts-bascher/stable/myapp/
       AWS_REGION=$AWS_REGION helm repo update
       AWS_REGION=$AWS_REGION helm upgrade --install \
         petclinic-app-release stable-petclinic/petclinic_chart --version ${BUILD_NUMBER} \
@@ -2248,7 +2248,7 @@ git push --set-upstream origin feature/msp-18
 - job name: test-running-dummy-selenium-job
 - job type: Freestyle project
 - Source Code Management: Git
-      Repository URL: https://github.com/[your-github-account]/petclinic-microservices.git
+      Repository URL: https://github.com/bascher/petclinic-microservices-with-db.git
 - Branches to build:
       Branch Specifier (blank for 'any'): */feature/msp-18
 - Build:
@@ -2399,7 +2399,7 @@ pipeline {
                 echo 'Deploying App on Kubernetes'
                 sh "envsubst < k8s/petclinic_chart/values-template.yaml > k8s/petclinic_chart/values.yaml"
                 sh "sed -i s/HELM_VERSION/${BUILD_NUMBER}/ k8s/petclinic_chart/Chart.yaml"
-                sh "helm repo add stable-petclinic s3://petclinic-helm-charts-123/stable/myapp/"
+                sh "helm repo add stable-petclinic s3://petclinic-helm-charts-bascher/stable/myapp/"
                 sh "helm package k8s/petclinic_chart"
                 sh "helm s3 push --force petclinic_chart-${BUILD_NUMBER}.tgz stable-petclinic"
                 sh "envsubst < ansible/playbooks/dev-petclinic-deploy-template > ansible/playbooks/dev-petclinic-deploy.yaml"
@@ -2695,7 +2695,7 @@ docker push "${IMAGE_TAG_PROMETHEUS_SERVICE}"
 echo 'Deploying App on Kubernetes'
 envsubst < k8s/petclinic_chart/values-template.yaml > k8s/petclinic_chart/values.yaml
 sed -i s/HELM_VERSION/${BUILD_NUMBER}/ k8s/petclinic_chart/Chart.yaml
-AWS_REGION=$AWS_REGION helm repo add stable-petclinic s3://petclinic-helm-charts-123/stable/myapp/ || echo "repository name already exists"
+AWS_REGION=$AWS_REGION helm repo add stable-petclinic s3://petclinic-helm-charts-bascher/stable/myapp/ || echo "repository name already exists"
 AWS_REGION=$AWS_REGION helm repo update
 helm package k8s/petclinic_chart
 AWS_REGION=$AWS_REGION helm s3 push --force petclinic_chart-${BUILD_NUMBER}.tgz stable-petclinic
@@ -2739,7 +2739,7 @@ git checkout feature/msp-21
 - job name: build-and-deploy-petclinic-on-qa-env  
 - job type: Freestyle project
 - Source Code Management: Git
-      Repository URL: https://github.com/[your-github-account]/petclinic-microservices.git
+      Repository URL: https://github.com/bascher/petclinic-microservices-with-db.git
 - Branches to build:
       Branch Specifier (blank for 'any'): */release
 - Build:
@@ -2901,7 +2901,7 @@ git push origin release
 - job name: petclinic-weekly-qa
 - job type: pipeline
 - Source Code Management: Git
-      Repository URL: https://github.com/[your-github-account]/petclinic-microservices.git
+      Repository URL: https://github.com/bascher/petclinic-microservices-with-db.git
 - Branches to build:
       Branch Specifier (blank for 'any'): */release
 - Pipeline:
@@ -3618,7 +3618,7 @@ pipeline {
                 sh "rm -f k8s/config"
                 sh "rancher cluster kf $CLUSTERID > k8s/config"
                 sh "chmod 400 k8s/config"
-                sh "helm repo add stable-petclinic s3://petclinic-helm-charts-123/stable/myapp/"
+                sh "helm repo add stable-petclinic s3://petclinic-helm-charts-bascher/stable/myapp/"
                 sh "helm package k8s/petclinic_chart"
                 sh "helm s3 push --force petclinic_chart-${BUILD_NUMBER}.tgz stable-petclinic"
                 sh "helm repo update"
@@ -3645,7 +3645,7 @@ pipeline {
 - Build Triggers:
       Build periodically: 59 23 * * 0
 - Source Code Management: Git
-      Repository URL: https://github.com/[your-github-account]/petclinic-microservices.git
+      Repository URL: https://github.com/bascher/petclinic-microservices-with-db.git
 - Branches to build:
       Branch Specifier (blank for 'any'): */release
 - Pipeline:
@@ -3800,7 +3800,7 @@ docker push "${IMAGE_TAG_PROMETHEUS_SERVICE}"
 echo 'Deploying App on Kubernetes'
 envsubst < k8s/petclinic_chart/values-template.yaml > k8s/petclinic_chart/values.yaml
 sed -i s/HELM_VERSION/${BUILD_NUMBER}/ k8s/petclinic_chart/Chart.yaml
-AWS_REGION=$AWS_REGION helm repo add stable-petclinic s3://petclinic-helm-charts-123/stable/myapp/ || echo "repository name already exists"
+AWS_REGION=$AWS_REGION helm repo add stable-petclinic s3://petclinic-helm-charts-bascher/stable/myapp/ || echo "repository name already exists"
 AWS_REGION=$AWS_REGION helm repo update
 helm package k8s/petclinic_chart
 AWS_REGION=$AWS_REGION helm s3 push --force petclinic_chart-${BUILD_NUMBER}.tgz stable-petclinic
@@ -3948,7 +3948,7 @@ git push origin main
 - job name: petclinic-prod
 - job type: pipeline
 - Source Code Management: Git
-      Repository URL: https://github.com/[your-github-account]/petclinic-microservices.git
+      Repository URL: https://github.com/bascher/petclinic-microservices-with-db.git
 - Branches to build:
       Branch Specifier (blank for 'any'): */main
 - Build triggers: GitHub hook trigger for GITScm polling
