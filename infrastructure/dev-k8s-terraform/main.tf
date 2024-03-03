@@ -173,7 +173,7 @@ resource "aws_instance" "worker-1" {
     ami = "ami-053b0d53c279acc90"
     instance_type = "t3a.medium"
     vpc_security_group_ids = [aws_security_group.petclinic-kube-worker-sg.id, aws_security_group.petclinic-mutual-sg.id]
-    key_name = "example"
+    key_name = "clarus"
     subnet_id = "subnet-09e68d6993d05962d"  # select own subnet_id of us-east-1a
     availability_zone = "us-east-1a"
     tags = {
@@ -189,7 +189,7 @@ resource "aws_instance" "worker-2" {
     ami = "ami-053b0d53c279acc90"
     instance_type = "t3a.medium"
     vpc_security_group_ids = [aws_security_group.petclinic-kube-worker-sg.id, aws_security_group.petclinic-mutual-sg.id]
-    key_name = "example"
+    key_name = "clarus"
     subnet_id = "subnet-09e68d6993d05962d"  # select own subnet_id of us-east-1a
     availability_zone = "us-east-1a"
     tags = {
