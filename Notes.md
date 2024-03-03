@@ -2109,7 +2109,7 @@ docker push "${IMAGE_TAG_PROMETHEUS_SERVICE}"
 ```
 
 - Commit the change, then push the scripts to the remote repo.
-
+ 
 ```bash
 git add .
 git commit -m 'added scripts for qa automation environment'
